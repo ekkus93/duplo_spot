@@ -1,0 +1,28 @@
+version: '3'
+services:
+  mongodb:
+    image: mongo
+    ports:
+      - '27017:27017'
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./src:/usr/src/app/src
+    ports:
+      - '3000:3000'  # Expose port 3000 on the host and container
+    depends_on:
+      - mongodb
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    volumes:
+      - ./client:/usr/src/app
+    ports:
+      - '3001:3000'  # Expose port 3000 in the container, but map it to port 3001 on the host
+    stdin_open: true
+    depends_on:
+      - server
+
